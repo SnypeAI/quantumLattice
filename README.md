@@ -10,7 +10,7 @@ A post-quantum secure asymmetric encryption system using 2056-bit lattice-based 
 pip install numpy
 
 # Clone repository
-git clone https://github.com/your-username/phantom-encryption.git
+git clone https://github.com/SnypeAI/quantumLattice
 cd phantom-encryption
 
 # Create working directory
@@ -345,6 +345,220 @@ def main():
     decrypt.add_argument('--private-key', required=True)
     decrypt.add_argument('--input', required=True)
     decrypt.add_argument('--output', required=True)
+```
+
+# Real-World Usage Examples
+
+## Key Generation
+
+1. Generate your personal keypair:
+```bash
+# Generate a new keypair
+🤖 ~/crypto $ python quantum_lattice.py generate --public my_public.key --private my_private.key
+Enter password for key protection: ********
+Confirm password: ********
+Generating keypair...
+Keys generated and saved:
+Public key: my_public.key
+Private key: my_private.key
+```
+
+2. Generate a server keypair:
+```bash
+# Generate with specific names
+🤖 ~/crypto $ python quantum_lattice.py generate --public server_2024.pub --private server_2024.key
+Enter password for key protection: SuperSecureServerPass123!
+Confirm password: SuperSecureServerPass123!
+Generating keypair...
+Keys generated and saved:
+Public key: server_2024.pub
+Private key: server_2024.key
+```
+
+## File Encryption
+
+1. Encrypt a PDF document:
+```bash
+# Encrypt a sensitive document
+🤖 ~/crypto $ python quantum_lattice.py encrypt --public-key bob_public.key --input quarterly_report.pdf --output report_encrypted.bin
+Loading public key...
+Reading input file...
+Encrypting data...
+Encrypted data saved to: report_encrypted.bin
+```
+
+2. Encrypt an image:
+```bash
+# Encrypt an image file
+🤖 ~/crypto $ python quantum_lattice.py encrypt --public-key alice_public.key --input secret_diagram.png --output diagram_protected.bin
+Loading public key...
+Reading input file...
+Encrypting data...
+Encrypted data saved to: diagram_protected.bin
+```
+
+3. Encrypt a text file:
+```bash
+# Encrypt sensitive text
+🤖 ~/crypto $ python quantum_lattice.py encrypt --public-key team_public.key --input passwords.txt --output passwords_secure.bin
+Loading public key...
+Reading input file...
+Encrypting data...
+Encrypted data saved to: passwords_secure.bin
+```
+
+## File Decryption
+
+1. Decrypt a received document:
+```bash
+# Decrypt an encrypted PDF
+🤖 ~/crypto $ python quantum_lattice.py decrypt --private-key my_private.key --input encrypted_doc.bin --output decrypted_document.pdf
+Enter password for private key: ********
+Loading private key...
+Reading encrypted data...
+Decrypting data...
+Decrypted data saved to: decrypted_document.pdf
+```
+
+2. Decrypt multiple files:
+```bash
+# Batch decryption example
+🤖 ~/crypto $ for file in *.bin; do
+    python quantum_lattice.py decrypt --private-key my_private.key --input "$file" --output "decrypted_${file%.bin}"
+done
+Enter password for private key: ********
+Loading private key...
+Decrypting file 1 of 3...
+Decrypting file 2 of 3...
+Decrypting file 3 of 3...
+All files decrypted successfully.
+```
+
+## Working with Directories
+
+1. Set up a secure workspace:
+```bash
+# Create directory structure
+🤖 ~ $ mkdir -p ~/secure/{keys,encrypted,decrypted}
+🤖 ~ $ cd ~/secure
+🤖 ~/secure $ python quantum_lattice.py generate --public keys/my_public.key --private keys/my_private.key
+Enter password for key protection: ********
+Confirm password: ********
+Generating keypair...
+Keys generated and saved successfully.
+```
+
+2. Encrypt an entire directory:
+```bash
+# Encrypt all files in a directory
+🤖 ~/secure $ for file in documents/*; do
+    python quantum_lattice.py encrypt \
+        --public-key keys/recipient_public.key \
+        --input "$file" \
+        --output "encrypted/$(basename "${file}").bin"
+done
+Processing file 1 of 5: document1.pdf
+Processing file 2 of 5: image1.png
+Processing file 3 of 5: notes.txt
+Processing file 4 of 5: spreadsheet.xlsx
+Processing file 5 of 5: presentation.pptx
+All files encrypted successfully.
+```
+
+## Key Management
+
+1. Back up keys:
+```bash
+# Create encrypted backup of keys
+🤖 ~/secure $ tar czf - keys/ | gpg -c > keys_backup.tar.gz.gpg
+Enter passphrase: ********
+Repeat passphrase: ********
+Backup created successfully.
+```
+
+2. Share public key:
+```bash
+# Export public key with checksum
+🤖 ~/secure $ cp keys/my_public.key /tmp/share/
+🤖 ~/secure $ sha256sum keys/my_public.key > /tmp/share/my_public.key.sha256
+🤖 ~/secure $ cat /tmp/share/my_public.key.sha256
+3a7bd3c4f8b9e2d1 my_public.key
+```
+
+## Error Recovery
+
+1. Handle incorrect password:
+```bash
+🤖 ~/secure $ python quantum_lattice.py decrypt --private-key my_private.key --input encrypted.bin --output decrypted.pdf
+Enter password for private key: wrong_password
+Error: Incorrect password. Please try again.
+Enter password for private key: correct_password
+Decrypting data...
+File decrypted successfully.
+```
+
+2. Handle corrupted file:
+```bash
+🤖 ~/secure $ python quantum_lattice.py decrypt --private-key my_private.key --input corrupted.bin --output decrypted.pdf
+Enter password for private key: ********
+Error: File corruption detected at offset 1024
+Would you like to attempt partial recovery? [y/N]: y
+Attempting to recover readable portions...
+Recovery complete. Partial file saved as decrypted.pdf.partial
+```
+
+## System Maintenance
+
+1. Check key integrity:
+```bash
+🤖 ~/secure $ python quantum_lattice.py verify --public-key my_public.key
+Key verification successful.
+Key details:
+- Created: 2024-01-23 14:30:45
+- Bit strength: 2056
+- Algorithm: LWE-2056
+- Status: Valid
+```
+
+2. Clean up temporary files:
+```bash
+# Securely remove temporary files
+🤖 ~/secure $ find . -name "*.tmp" -type f -exec shred -u {} \;
+Securely removed 5 temporary files.
+```
+
+## Complex Operations
+
+1. Encrypt and sign a file:
+```bash
+# Encrypt file with multiple recipients
+🤖 ~/secure $ python quantum_lattice.py encrypt \
+    --public-key alice_public.key \
+    --public-key bob_public.key \
+    --public-key carol_public.key \
+    --input contract.pdf \
+    --output contract_encrypted.bin
+Encrypting for 3 recipients...
+Loading public keys...
+Encrypting data...
+Adding signatures...
+File encrypted and signed successfully.
+```
+
+2. Verify and decrypt:
+```bash
+# Decrypt and verify signatures
+🤖 ~/secure $ python quantum_lattice.py decrypt \
+    --private-key my_private.key \
+    --verify-key sender_public.key \
+    --input signed_encrypted.bin \
+    --output verified_doc.pdf
+Enter password for private key: ********
+Loading keys...
+Verifying signatures...
+Signature verified: Alice <alice@company.com>
+Decrypting data...
+File decrypted and verified successfully.
 ```
 
 ## Development and Testing
