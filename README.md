@@ -5,7 +5,7 @@ A post-quantum secure asymmetric encryption system using 2056-bit lattice-based 
 ## Quick Start
 
 ### 1. Setup
-±±±bash
+```bash
 # Install dependencies
 pip install numpy
 
@@ -16,11 +16,11 @@ cd phantom-encryption
 # Create working directory
 mkdir secure-comms
 cd secure-comms
-±±±
+```
 
 ### 2. Basic Usage Flow:
 
-±±±mermaid
+```mermaid
 graph TD
     A[Install] --> B[Generate Keys]
     B --> C[Share Public Key]
@@ -32,13 +32,12 @@ graph TD
     style B fill:#bbf,stroke:#333
     style C fill:#dfd,stroke:#333
     style D fill:#fdd,stroke:#333
-±±±
+```
 
 ## File Structure
-
 Create these files in your working directory:
 
-±±±
+```
 secure-comms/
 ├── quantum_lattice.py    # Main encryption script
 ├── keys/                 # Directory for key storage
@@ -46,7 +45,7 @@ secure-comms/
 │   └── private/         
 ├── messages/            # Directory for encrypted files
 └── decrypted/          # Directory for decrypted files
-±±±
+```
 
 ## Detailed Operations
 
@@ -54,16 +53,16 @@ secure-comms/
 
 Generate your keypair:
 
-±±±bash
+```bash
 # Create key directories
 mkdir -p keys/public keys/private
 
 # Generate keypair with password protection
 python quantum_lattice.py generate --public keys/public/my_public.key --private keys/private/my_private.key
-±±±
+```
 
 Process Flow:
-±±±mermaid
+```mermaid
 sequenceDiagram
     participant User
     participant System
@@ -76,13 +75,13 @@ sequenceDiagram
     System->>KeyStore: Save Public Key
     System->>KeyStore: Save Encrypted Private Key
     System->>User: Confirm Generation
-±±±
+```
 
 ### 2. File Encryption
 
 To encrypt a file for someone:
 
-±±±bash
+```bash
 # Create message directory
 mkdir -p messages
 
@@ -91,10 +90,10 @@ python quantum_lattice.py encrypt \
     --public-key /path/to/their_public.key \
     --input /path/to/secret.pdf \
     --output messages/encrypted_secret.bin
-±±±
+```
 
 Encryption Process:
-±±±mermaid
+```mermaid
 flowchart LR
     A[Input File] --> B[Read Chunks]
     B --> C[Process Each Chunk]
@@ -106,13 +105,13 @@ flowchart LR
     C1 --> C2[Add Noise]
     C2 --> C3[Apply Transform]
     end
-±±±
+```
 
 ### 3. File Decryption
 
 To decrypt a received file:
 
-±±±bash
+```bash
 # Create decrypted directory
 mkdir -p decrypted
 
@@ -121,10 +120,10 @@ python quantum_lattice.py decrypt \
     --private-key keys/private/my_private.key \
     --input messages/encrypted_secret.bin \
     --output decrypted/secret.pdf
-±±±
+```
 
 Decryption Process:
-±±±mermaid
+```mermaid
 sequenceDiagram
     participant User
     participant System
@@ -139,7 +138,7 @@ sequenceDiagram
         System->>Storage: Write Decrypted Chunk
     end
     System->>User: Confirm Completion
-±±±
+```
 
 ## Technical Implementation Details
 
@@ -147,19 +146,19 @@ sequenceDiagram
 
 The system uses these specific parameters:
 
-±±±python
+```python
 # Lattice configuration
 LATTICE_DIM = 2056          # Dimension for quantum security
 MODULUS = 2147483647        # Largest 31-bit prime
 NOISE_BOUND = 4.8           # Gaussian parameter
 CHUNK_SIZE = 1024           # Processing block size
-±±±
+```
 
 ### 2. Key Generation Implementation
 
 The key generation process in detail:
 
-±±±python
+```python
 def generate_keypair(password: str) -> Tuple[Dict, Dict]:
     # Generate salt for key derivation
     salt = os.urandom(32)
@@ -190,13 +189,13 @@ def generate_keypair(password: str) -> Tuple[Dict, Dict]:
         's': s,
         'salt': salt
     }
-±±±
+```
 
 ### 3. Encryption Implementation
 
 File encryption process:
 
-±±±python
+```python
 def encrypt_file(input_file: str, public_key: Dict, output_file: str):
     # Read file in chunks
     with open(input_file, 'rb') as f:
@@ -217,13 +216,13 @@ def encrypt_file(input_file: str, public_key: Dict, output_file: str):
             
             # Write encrypted chunk
             write_encrypted_chunk(output_file, c1, c2)
-±±±
+```
 
 ### 4. Decryption Implementation
 
 File decryption process:
 
-±±±python
+```python
 def decrypt_file(input_file: str, private_key: Dict, password: str, output_file: str):
     # Verify password and decrypt private key
     key_material = derive_key_material(password, private_key['salt'])
@@ -240,13 +239,13 @@ def decrypt_file(input_file: str, private_key: Dict, password: str, output_file:
             # Decode and write
             plaintext = decode_from_lattice(m)
             f_out.write(unpad_chunk(plaintext))
-±±±
+```
 
 ## Error Handling
 
 The system includes comprehensive error handling:
 
-±±±mermaid
+```mermaid
 graph TD
     A[Error Occurs] --> B{Type of Error}
     B -->|Password| C[Password Error]
@@ -258,7 +257,7 @@ graph TD
     D --> H[Check Paths]
     E --> I[Free Memory]
     F --> J[Verify Keys]
-±±±
+```
 
 Error types and handling:
 
@@ -286,7 +285,7 @@ Error types and handling:
 
 Key performance considerations:
 
-±±±python
+```python
 # Chunk size tuning
 OPTIMAL_CHUNK = 1024 * 1024  # 1MB chunks
 
@@ -295,13 +294,13 @@ MAX_MEMORY = 1024 * 1024 * 1024  # 1GB limit
 
 # Multi-processing
 NUM_WORKERS = min(os.cpu_count(), 4)  # Use up to 4 cores
-±±±
+```
 
 ## Security Considerations
 
 Security implementation details:
 
-±±±python
+```python
 # Security parameters
 MIN_PASSWORD_LENGTH = 16
 MIN_ENTROPY_BITS = 128
@@ -312,13 +311,13 @@ MEMORY_WIPING = True
 TIMING_SAFE = True
 CONSTANT_TIME = True
 MEMORY_HARD = True
-±±±
+```
 
 ## Command Line Interface
 
 Complete CLI reference:
 
-±±±python
+```python
 def main():
     parser = argparse.ArgumentParser(
         description='Phantom Encryption System'
@@ -346,13 +345,13 @@ def main():
     decrypt.add_argument('--private-key', required=True)
     decrypt.add_argument('--input', required=True)
     decrypt.add_argument('--output', required=True)
-±±±
+```
 
 ## Development and Testing
 
 For development:
 
-±±±bash
+```bash
 # Run tests
 python -m pytest tests/
 
@@ -361,7 +360,7 @@ pylint quantum_lattice.py
 
 # Generate documentation
 pdoc3 quantum_lattice.py
-±±±
+```
 
 ## Known Issues and Limitations
 
@@ -386,7 +385,7 @@ Current limitations:
 
 Planned enhancements:
 
-±±±mermaid
+```mermaid
 graph LR
     A[Current] --> B[Short Term]
     A --> C[Medium Term]
@@ -400,4 +399,4 @@ graph LR
     
     D --> D1[Hardware Acceleration]
     D --> D2[Multi-Platform]
-±±±
+```
